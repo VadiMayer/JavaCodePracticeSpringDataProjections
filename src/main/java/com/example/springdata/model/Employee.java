@@ -15,9 +15,9 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
-    @Column(name = "firstName")
+    @Column(name = "firstname")
     private String firstName;
-    @Column(name = "lastName")
+    @Column(name = "lastname")
     private String lastName;
     @Column(name = "position")
     private String position;
@@ -25,6 +25,7 @@ public class Employee {
     private int salary;
 
     @ManyToOne
+    @JoinColumn(name = "department_id")
     private Department department;
 
     public Employee(String firstName, String lastName, String position, int salary, Department department) {
