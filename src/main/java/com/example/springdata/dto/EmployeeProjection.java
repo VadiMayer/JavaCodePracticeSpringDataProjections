@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 public interface EmployeeProjection {
 
-    @Value("#{target.firstname + ' ' + target.lastname}")
+    @Value("#{target.firstName + ' ' + target.lastName}")
     String getFullName();
 
     String getPosition();
