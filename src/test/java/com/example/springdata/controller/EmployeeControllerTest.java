@@ -1,5 +1,6 @@
 package com.example.springdata.controller;
 
+import com.example.springdata.dto.EmployeeProjection;
 import com.example.springdata.model.Department;
 import com.example.springdata.model.Employee;
 import com.example.springdata.repository.DepartmentRepository;
@@ -11,14 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -64,11 +65,18 @@ class EmployeeControllerTest {
     void getEmployeesProjection() throws Exception {
         mockMvc.perform(get("/employees"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(employeeRepository.getEmployeesProjection())));
+                .andExpect(content().json(objectMapper.writeValueAsString(employeeRepository.getEmployeesProjection())))
+                .andExpect(jsonPath("$.size()").value(5));
     }
 
     @Test
-    void getEmployeeById() {
+    void getEmployeeById() throws Exception {
+        EmployeeProjection employeeProjection = employeeRepository.getEmployeeProjection(1);
+        mockMvc.perform(get("/employees/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.position").value("Director"))
+                .andExpect(jsonPath("$.departmentName").value("The Board of Directors"))
+                .andExpect(jsonPath("$.fullName").value("Vadim Kulagin"));
     }
 
     @Test
